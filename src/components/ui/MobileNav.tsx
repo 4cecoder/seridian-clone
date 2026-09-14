@@ -77,7 +77,7 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
           <Link href="/" className="flex items-center gap-2.5" onClick={onClose}>
             <span
               aria-label="Seridian logo"
-              className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-lg"
+              className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full ring-1 ring-white/10"
             >
               <img
                 src="/assets/images/seridian-logo-sm.gif"

@@ -8,7 +8,7 @@ export function Footer() {
           <div className="flex items-center gap-2.5">
             <span
               aria-label="Seridian logo"
-              className="flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden rounded-md"
+              className="flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden rounded-full ring-1 ring-white/10"
             >
               <img
                 src="/assets/images/seridian-logo-sm.gif"
