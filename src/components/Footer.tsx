@@ -10,19 +10,12 @@ export function Footer() {
               aria-label="Seridian logo"
               className="flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden rounded-md"
             >
-              <video
-                autoPlay
-                loop
-                muted
-                playsInline
+              <img
+                src="/assets/images/seridian-logo-sm.gif"
+                alt=""
                 className="h-full w-full object-contain"
                 aria-hidden="true"
-              >
-                <source
-                  src="/assets/images/Can_you_make_a_video_of_that_a.mp4"
-                  type="video/mp4"
-                />
-              </video>
+              />
             </span>
             <span className="font-display text-sm font-semibold text-white">Seridian</span>
           </div>

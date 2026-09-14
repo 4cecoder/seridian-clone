@@ -27,19 +27,12 @@ export function Header() {
             aria-label="Seridian logo"
             className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-lg"
           >
-            <video
-              autoPlay
-              loop
-              muted
-              playsInline
+            <img
+              src="/assets/images/seridian-logo-sm.gif"
+              alt=""
               className="h-full w-full object-contain"
               aria-hidden="true"
-            >
-              <source
-                src="/assets/images/Can_you_make_a_video_of_that_a.mp4"
-                type="video/mp4"
-              />
-            </video>
+            />
           </span>
           <span className="font-display text-lg font-semibold tracking-tight text-white">
             Seridian
