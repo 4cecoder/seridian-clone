@@ -234,4 +234,94 @@ export default defineSchema({
     state: v.string(),
     syncedAt: v.number(),
   }).index("by_githubId", ["githubId"]),
+
+  agentWorkItems: defineTable({
+    workType: v.union(
+      v.literal("analysis"),
+      v.literal("planning"),
+      v.literal("implementation"),
+      v.literal("review"),
+      v.literal("integration"),
+      v.literal("metrics"),
+    ),
+    lane: v.optional(v.string()),
+    title: v.string(),
+    description: v.optional(v.string()),
+    status: v.union(
+      v.literal("pending"),
+      v.literal("claimed"),
+      v.literal("in_progress"),
+      v.literal("completed"),
+      v.literal("failed"),
+    ),
+    priority: v.union(
+      v.literal("critical"),
+      v.literal("high"),
+      v.literal("medium"),
+      v.literal("low"),
+    ),
+    claimedBy: v.optional(v.string()),
+    claimedAt: v.optional(v.number()),
+    completedAt: v.optional(v.number()),
+    result: v.optional(v.object({
+      summary: v.string(),
+      output: v.optional(v.string()),
+      metrics: v.optional(v.record(v.string(), v.any())),
+    })),
+    dependencies: v.array(v.id("agentWorkItems")),
+    blockedBy: v.array(v.id("agentWorkItems")),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_status", ["status"])
+    .index("by_lane", ["lane"])
+    .index("by_claimedBy", ["claimedBy"])
+    .index("by_status_and_lane", ["status", "lane"]),
+
+  agentCheckpoints: defineTable({
+    agent: v.string(),
+    checkpointType: v.union(
+      v.literal("heartbeat"),
+      v.literal("task_start"),
+      v.literal("task_complete"),
+      v.literal("error"),
+    ),
+    laneContext: v.optional(v.string()),
+    message: v.string(),
+    metrics: v.optional(v.record(v.string(), v.any())),
+    timestamp: v.number(),
+  })
+    .index("by_agent", ["agent"])
+    .index("by_timestamp", ["timestamp"])
+    .index("by_agent_and_timestamp", ["agent", "timestamp"]),
+
+  laneMetrics: defineTable({
+    lane: v.string(),
+    metric: v.string(),
+    value: v.number(),
+    timestamp: v.number(),
+    metadata: v.optional(v.record(v.string(), v.any())),
+  })
+    .index("by_lane", ["lane"])
+    .index("by_lane_and_metric", ["lane", "metric"])
+    .index("by_timestamp", ["timestamp"]),
+
+  agentConfig: defineTable({
+    agentId: v.string(),
+    role: v.union(
+      v.literal("orchestrator"),
+      v.literal("planner"),
+      v.literal("engineer"),
+      v.literal("reviewer"),
+      v.literal("integrator"),
+      v.literal("analyst"),
+    ),
+    lanes: v.array(v.string()),
+    capabilities: v.array(v.string()),
+    maxConcurrentTasks: v.number(),
+    active: v.boolean(),
+    metadata: v.optional(v.record(v.string(), v.any())),
+  })
+    .index("by_role", ["role"])
+    .index("by_agentId", ["agentId"]),
 });

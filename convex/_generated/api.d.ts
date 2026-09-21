@@ -8,6 +8,12 @@
  * @module
  */
 
+import type * as agent_bootstrap from "../agent_bootstrap.js";
+import type * as agent_coordination from "../agent_coordination.js";
+import type * as agent_launcher from "../agent_launcher.js";
+import type * as agent_monitoring from "../agent_monitoring.js";
+import type * as agent_state from "../agent_state.js";
+import type * as agent_testing from "../agent_testing.js";
 import type * as bookings from "../bookings.js";
 import type * as caseStudies from "../caseStudies.js";
 import type * as channels from "../channels.js";
@@ -31,6 +37,12 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  agent_bootstrap: typeof agent_bootstrap;
+  agent_coordination: typeof agent_coordination;
+  agent_launcher: typeof agent_launcher;
+  agent_monitoring: typeof agent_monitoring;
+  agent_state: typeof agent_state;
+  agent_testing: typeof agent_testing;
   bookings: typeof bookings;
   caseStudies: typeof caseStudies;
   channels: typeof channels;

@@ -2,6 +2,7 @@
 import { convexTest } from "convex-test";
 import { expect, test, describe, beforeEach } from "vitest";
 import { api } from "./_generated/api";
+import { Doc } from "./_generated/dataModel";
 import schema from "./schema";
 
 const modules = import.meta.glob("./**/*.ts");
@@ -135,8 +136,8 @@ describe("chat functions", () => {
 
     const channels = await t.query(api.chat.listChannels, { pubkey: "user1" });
     expect(channels).toHaveLength(2);
-    expect(channels.map((c) => c.name)).toContain("owned");
-    expect(channels.map((c) => c.name)).toContain("joined");
+    expect(channels.map((c: Doc<"channels">) => c.name)).toContain("owned");
+    expect(channels.map((c: Doc<"channels">) => c.name)).toContain("joined");
   });
 
   test("listChannels sorts by createdAt descending", async () => {
@@ -310,7 +311,7 @@ describe("chat functions", () => {
     });
 
     const channel = await t.query(api.chat.getChannel, { channelId });
-    expect(channel?.participants.filter((p) => p === "user1")).toHaveLength(1);
+    expect(channel?.participants.filter((p: string) => p === "user1")).toHaveLength(1);
   });
 
   test("leaveChannel removes participant", async () => {
@@ -387,9 +388,9 @@ describe("chat functions", () => {
 
     const users = await t.query(api.chat.getUsers, {});
     expect(users).toHaveLength(2);
-    expect(users.map((u) => u.pubkey)).toContain("user1");
-    expect(users.map((u) => u.pubkey)).toContain("user2");
-    expect(users.map((u) => u.pubkey)).not.toContain("user3");
+    expect(users.map((u: Doc<"users">) => u.pubkey)).toContain("user1");
+    expect(users.map((u: Doc<"users">) => u.pubkey)).toContain("user2");
+    expect(users.map((u: Doc<"users">) => u.pubkey)).not.toContain("user3");
   });
 
   test("listMessages returns messages in ascending order", async () => {
