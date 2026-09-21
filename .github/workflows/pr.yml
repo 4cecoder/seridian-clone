@@ -35,13 +35,16 @@ jobs:
       - name: Typecheck (tsc --noEmit)
         run: bunx tsc --noEmit
 
+      - name: Unit tests (vitest)
+        run: bun run test
+
       - name: Build (Next.js)
         run: bun run build
         env:
           NEXT_TELEMETRY_DISABLED: 1
           # Public Convex URL required at build time (prerender instantiates ConvexReactClient).
           # Same value as Netlify production env; NEXT_PUBLIC_ vars ship to the browser anyway.
-          NEXT_PUBLIC_CONVEX_URL: https://fine-flamingo-162.convex.cloud
+          NEXT_PUBLIC_CONVEX_URL: https://watchful-cricket-498.convex.cloud
 
       - name: Upload build artifact
         if: always()
@@ -50,6 +53,57 @@ jobs:
           name: next-build
           path: .next
           if-no-files-found: ignore
+
+  e2e:
+    name: E2E (Playwright / chromium)
+    runs-on: ubuntu-latest
+    needs: ci
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - name: Install deps (bun)
+        run: bun install --frozen-lockfile
+      - name: Install Playwright chromium
+        run: bunx playwright install --with-deps chromium
+      - name: Run Playwright e2e
+        run: bun run test:e2e
+        env:
+          NEXT_TELEMETRY_DISABLED: 1
+          NEXT_PUBLIC_CONVEX_URL: https://watchful-cricket-498.convex.cloud
+          CI: true
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report
+          if-no-files-found: ignore
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: test-results
+          if-no-files-found: ignore
+
+  quality-gates:
+    name: Quality Gates (SyntaxGate / DiffGate / CompilationGate)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # full history needed to diff against origin/main
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - name: Install deps (bun)
+        run: bun install --frozen-lockfile
+      - name: Run deterministic quality gates
+        run: bun run gates -- --base origin/main
 
   size-check:
     name: Bundle Size Check (bun)
@@ -65,7 +119,7 @@ jobs:
       - run: bunx next build --profile 2>&1 | tee build.log || true
         env:
           NEXT_TELEMETRY_DISABLED: 1
-          NEXT_PUBLIC_CONVEX_URL: https://fine-flamingo-162.convex.cloud
+          NEXT_PUBLIC_CONVEX_URL: https://watchful-cricket-498.convex.cloud
       - name: Comment bundle hint
         uses: marocchino/sticky-pull-request-comment@v2
         if: github.event_name == 'pull_request'
@@ -79,7 +133,7 @@ jobs:
   auto-merge-ready:
     name: Label PR Ready
     runs-on: ubuntu-latest
-    needs: ci
+    needs: [ci, quality-gates]
     if: github.event_name == 'pull_request' && success()
     steps:
       - uses: actions/github-script@v7

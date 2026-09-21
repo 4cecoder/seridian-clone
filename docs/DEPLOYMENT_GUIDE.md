@@ -22,11 +22,11 @@ bunx convex deploy
 
 This deploys:
 - Schema extensions: `agentWorkItems`, `agentCheckpoints`, `laneMetrics`, `agentConfig`
-- Agent coordination APIs: `convex/agent-coordination.ts`
-- Agent launchers: `convex/agent-launcher.ts`
-- State machine logic: `convex/agent-state.ts`
-- Bootstrap + seeding: `convex/agent-bootstrap.ts`
-- Monitoring queries: `convex/agent-monitoring.ts`
+- Agent coordination APIs: `convex/agent_coordination.ts`
+- Agent launchers: `convex/agent_launcher.ts`
+- State machine logic: `convex/agent_state.ts`
+- Bootstrap + seeding: `convex/agent_bootstrap.ts`
+- Monitoring queries: `convex/agent_monitoring.ts`
 
 ## Step 2: Bootstrap the system (2 min)
 

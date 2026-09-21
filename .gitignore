@@ -10,6 +10,8 @@
 
 # testing
 /coverage
+/playwright-report
+/test-results
 
 # next.js
 /.next/
@@ -38,3 +40,13 @@ next-env.d.ts
 # Local Netlify folder
 .netlify
 seed.ts
+
+# python (local/ orchestration layer)
+__pycache__/
+*.pyc
+
+# subagent worktrees (Agent tool isolation: "worktree")
+.claude/worktrees/
+
+# MCP config with live API keys — never commit
+.mcp.json

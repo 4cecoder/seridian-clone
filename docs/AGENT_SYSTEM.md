@@ -369,7 +369,7 @@ Query `laneMetrics` to build dashboards:
 
 ## Next steps
 
-1. **Deploy the schema** (`convex/schema.ts` + `convex/agent-coordination.ts`)
+1. **Deploy the schema** (`convex/schema.ts` + `convex/agent_coordination.ts`)
 2. **Create agent code** (6 Haiku instances in Claude Code agents, one per role)
 3. **Test with Auth lane** (Wave 1 priority)
 4. **Measure:** Orchestrator heartbeat latency, reviewer turnaround, gate accuracy

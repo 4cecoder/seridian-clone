@@ -13,6 +13,11 @@
     "lint": "eslint .",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "gates": "bun run scripts/gates/run-gates.ts",
+    "gates:syntax": "bun run scripts/gates/syntax-gate.ts",
+    "gates:diff": "bun run scripts/gates/diff-gate.ts",
+    "seridian": "bun run scripts/seridian.ts",
     "seed": "bun run seed.ts",
     "convex:dev": "bunx convex dev",
     "convex:deploy": "bunx convex deploy"
@@ -26,6 +31,7 @@
   },
   "devDependencies": {
     "@edge-runtime/vm": "^5.0.0",
+    "@playwright/test": "^1.63.0",
     "@tailwindcss/postcss": "^4.1.11",
     "@types/node": "^24.2.1",
     "@types/react": "^19.1.9",
