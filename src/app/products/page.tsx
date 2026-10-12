@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Badge } from "@bytecats/ui-kit";
-import { ProductGrid } from "@/components/products/ProductGrid";
-import { productCategories, productsByCategory } from "@/data/products";
+import { ProductsOverview } from "@/components/products/ProductsOverview";
 
 export const metadata: Metadata = {
   title: "Products | Seridian",
@@ -44,26 +43,7 @@ export default function ProductsPage() {
         </div>
       </section>
 
-      {productCategories.map((category, index) => {
-        const headingId = `${category.id}-products-heading`;
-        return (
-          <section
-            key={category.id}
-            aria-labelledby={headingId}
-            className={`border-b border-white/5 py-24 ${index % 2 === 0 ? "bg-slate-925" : "bg-slate-950"}`}
-          >
-            <div className="mx-auto max-w-6xl px-6">
-              <div className="mb-10 max-w-2xl">
-                <h2 id={headingId} className="font-display text-2xl font-bold tracking-tight text-white md:text-3xl">
-                  {category.label}
-                </h2>
-                <p className="mt-3 text-slate-400">{category.description}</p>
-              </div>
-              <ProductGrid products={productsByCategory(category.id)} labelledBy={headingId} />
-            </div>
-          </section>
-        );
-      })}
+      <ProductsOverview variant="page" />
     </>
   );
 }

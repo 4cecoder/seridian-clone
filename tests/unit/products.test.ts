@@ -5,6 +5,7 @@ import {
   productStatusLabels,
   productsByCategory,
   products,
+  platformBase,
   type ProductStatus,
 } from "../../src/data/products";
 
@@ -72,5 +73,48 @@ describe("products data", () => {
     for (const product of products) {
       expect(product.value, product.id).not.toMatch(/\$|%|\d\+?\s*(customers|users|clients)/i);
     }
+  });
+
+  it("places every product in the right tier", () => {
+    const core = productsByCategory("core").map((product) => product.id).sort();
+    const portfolio = productsByCategory("portfolio").map((product) => product.id).sort();
+    expect(core).toEqual(
+      [
+        "seridian-auth",
+        "seridian-chat",
+        "seridian-mail",
+        "seridian-sched",
+        "seridian-sign",
+        "seridian-docs",
+        "seridian-blog",
+        "seridian-deploy",
+        "seridian-automations",
+        "usermon",
+      ].sort(),
+    );
+    expect(portfolio).toEqual(
+      [
+        "kanban",
+        "property-portal",
+        "petdocs",
+        "vaylo",
+        "pitline",
+        "pack-n-pick",
+        "i-you-fix-it",
+        "seridian-vpn",
+      ].sort(),
+    );
+    expect(core.length + portfolio.length).toBe(products.length);
+  });
+
+  it("marks exactly one foundation, and it is a Core service", () => {
+    const foundations = products.filter((product) => product.foundation);
+    expect(foundations.map((product) => product.id)).toEqual(["seridian-auth"]);
+    expect(foundations[0].category).toBe("core");
+  });
+
+  it("describes the shared Core base", () => {
+    expect(platformBase.name).toBeTruthy();
+    expect(validStatuses).toContain(platformBase.status);
   });
 });

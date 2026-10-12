@@ -3,12 +3,13 @@ import type { Product } from "@/data/products";
 import { ProductIcon } from "./ProductIcon";
 import { StatusBadge } from "./StatusBadge";
 
+/** Portfolio product card: lifts on hover, layered shadow, hairline border. */
 export function ProductCard({ product }: { product: Product }) {
   return (
-    <Card className="card-glow group flex h-full flex-col rounded-xl border-white/5 bg-slate-850/30 p-6 transition-all hover:border-seridian-500/20">
+    <Card className="group flex h-full flex-col rounded-2xl border border-white/10 bg-gradient-to-b from-slate-850/70 to-slate-925 p-6 shadow-[0_1px_0_0_rgba(255,255,255,0.05)_inset,0_1px_2px_rgba(0,0,0,0.4),0_12px_24px_-12px_rgba(0,0,0,0.6)] transition duration-300 hover:-translate-y-1 hover:border-seridian-500/30 hover:shadow-[0_1px_0_0_rgba(255,255,255,0.06)_inset,0_2px_4px_rgba(0,0,0,0.4),0_24px_48px_-16px_rgba(6,182,212,0.18)] motion-reduce:transition-none motion-reduce:hover:transform-none">
       <CardHeader className="flex-row items-start justify-between gap-3 p-0">
-        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-seridian-500/10 text-seridian-400">
-          <ProductIcon icon={product.icon} />
+        <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-seridian-500/20 bg-seridian-500/10 text-seridian-400 shadow-[0_0_24px_-6px_rgba(6,182,212,0.5)]">
+          <ProductIcon icon={product.icon} className="h-6 w-6" />
         </span>
         <StatusBadge status={product.status} />
       </CardHeader>

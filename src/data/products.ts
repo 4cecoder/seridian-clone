@@ -46,9 +46,18 @@ export interface Product {
   url?: string;
   category: ProductCategory;
   icon: ProductIconKey;
-  /** Shown in the home-page teaser. Kanban is featured separately. */
+  /** Shown in the home-page teaser. Kanban is the flagship and is shown as a hero. */
   featured?: boolean;
+  /** The sign-in and identity layer every Core service sits on. */
+  foundation?: boolean;
 }
+
+/** The shared Core base that every Core service runs on. Not a sellable product. */
+export const platformBase = {
+  name: "Shared backend",
+  value: "One backend for Seridian services: identity, Kanban and the core lanes.",
+  status: "in-development" as ProductStatus,
+};
 
 export const products: Product[] = [
   // Portfolio
@@ -142,6 +151,7 @@ export const products: Product[] = [
     category: "core",
     icon: "lock",
     featured: true,
+    foundation: true,
   },
   {
     id: "usermon",
