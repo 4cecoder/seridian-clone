@@ -5,7 +5,7 @@ export function ProductGrid({ products, labelledBy }: { products: Product[]; lab
   return (
     <ul aria-labelledby={labelledBy} className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
       {products.map((product) => (
-        <li key={product.id} className="flex">
+        <li key={product.id} className="flex flex-col">
           <ProductCard product={product} />
         </li>
       ))}

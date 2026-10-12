@@ -58,6 +58,22 @@ test.describe("products page", () => {
     await expect(link).toBeVisible();
   });
 
+  test("gives every card in a section the same width at 1440px", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto("/products");
+    const sections = page.locator("section ul");
+    const count = await sections.count();
+    expect(count).toBeGreaterThanOrEqual(2);
+    for (let s = 0; s < count; s++) {
+      const widths = await sections
+        .nth(s)
+        .locator(":scope > li > *")
+        .evaluateAll((cards) => cards.map((card) => Math.round(card.getBoundingClientRect().width)));
+      expect(widths.length).toBeGreaterThan(0);
+      expect(new Set(widths).size, `section ${s} widths ${widths.join(",")}`).toBe(1);
+    }
+  });
+
   test("has no horizontal page scroll", async ({ page }) => {
     await page.goto("/products");
     const overflow = await page.evaluate(
