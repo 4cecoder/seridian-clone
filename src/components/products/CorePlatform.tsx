@@ -1,5 +1,5 @@
 import { Badge } from "@bytecats/ui-kit";
-import { platformBase, productsByCategory, type Product } from "@/data/products";
+import { productsByCategory, type Product } from "@/data/products";
 import { ProductIcon } from "./ProductIcon";
 import { StatusBadge } from "./StatusBadge";
 
@@ -40,7 +40,7 @@ function ModuleTile({ product }: { product: Product }) {
   );
 }
 
-/** The Core platform: apps and services on top, Auth as the foundation, one shared backend at the base. */
+/** The Core platform: services on top, with Seridian Auth as the shared sign-in foundation. */
 export function CorePlatform({ id = "core" }: { id?: string }) {
   const core = productsByCategory("core");
   const foundation = core.find((product) => product.foundation);
@@ -67,8 +67,8 @@ export function CorePlatform({ id = "core" }: { id?: string }) {
             Core platform
           </h2>
           <p className="mt-4 text-slate-400">
-            Every Core service runs on one shared backend and signs people in through the same
-            foundation. Each service is a module on that platform, with its own status.
+            Every Core service signs people in through Seridian Auth, so one account works
+            across all of them. Each service shows its own status.
           </p>
         </div>
 
@@ -119,21 +119,6 @@ export function CorePlatform({ id = "core" }: { id?: string }) {
             </div>
           )}
 
-          <Connector />
-
-          <div
-            data-testid="core-base"
-            className="rounded-2xl border border-dashed border-white/15 bg-slate-950/80 p-6"
-          >
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <div>
-                <p className="font-mono text-xs uppercase tracking-wider text-slate-500">Base layer</p>
-                <h3 className="font-display mt-1 text-lg font-semibold text-white">{platformBase.name}</h3>
-                <p className="mt-1 text-sm text-slate-400">{platformBase.value}</p>
-              </div>
-              <StatusBadge status={platformBase.status} />
-            </div>
-          </div>
         </div>
       </div>
     </section>
