@@ -17,7 +17,7 @@ export function TierIntro({ id }: { id?: string }) {
             </span>
             <p className="text-sm leading-relaxed text-slate-300">
               <span className="font-display font-semibold text-white">Seridian Core is the platform.</span>{" "}
-              One shared backend and one sign-in (Seridian Auth) across every service, with many apps
+              One account across every service, signed in through Seridian Auth, with many apps
               built on it.
             </p>
           </div>

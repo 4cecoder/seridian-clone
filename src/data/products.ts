@@ -52,13 +52,6 @@ export interface Product {
   foundation?: boolean;
 }
 
-/** The shared Core base that every Core service runs on. Not a sellable product. */
-export const platformBase = {
-  name: "Shared backend",
-  value: "One backend for Seridian services: identity, Kanban and the core lanes.",
-  status: "in-development" as ProductStatus,
-};
-
 export const products: Product[] = [
   // Portfolio
   {
@@ -237,7 +230,7 @@ export const productCategories: { id: ProductCategory; label: string; descriptio
   {
     id: "core",
     label: "Core services",
-    description: "The shared platform services Seridian is building on one backend.",
+    description: "The platform services Seridian is building, with one sign-in across all of them.",
   },
 ];
 

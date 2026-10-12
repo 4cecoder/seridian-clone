@@ -5,7 +5,6 @@ import {
   productStatusLabels,
   productsByCategory,
   products,
-  platformBase,
   type ProductStatus,
 } from "../../src/data/products";
 
@@ -113,8 +112,13 @@ describe("products data", () => {
     expect(foundations[0].category).toBe("core");
   });
 
-  it("describes the shared Core base", () => {
-    expect(platformBase.name).toBeTruthy();
-    expect(validStatuses).toContain(platformBase.status);
+  it("@regression SER-11 public product copy does not describe internal architecture", () => {
+    // Founder 2026-10-12: don't publish backend/infrastructure details on the marketing site.
+    const forbidden = /shared backend|one backend|base layer|core lanes|convex/i;
+    const copy = [
+      ...products.flatMap((product) => [product.name, product.value]),
+      ...productCategories.map((category) => `${category.label} ${category.description}`),
+    ].join("\n");
+    expect(copy).not.toMatch(forbidden);
   });
 });
