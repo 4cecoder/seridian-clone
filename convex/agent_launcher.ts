@@ -1,6 +1,7 @@
 import { mutation, internalAction, action, ActionCtx } from "./_generated/server";
 import { v } from "convex/values";
 import { internal, api } from "./_generated/api";
+import { requireStaff } from "./lib/staff";
 
 // Each `launchX` below is exported as a standalone Convex action (for external
 // or scheduled invocation) but its logic also lives in a plain `doLaunchX`
@@ -239,6 +240,7 @@ export const bootstrapSystem = action({
     includeTestItem: v.optional(v.boolean()),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     const steps: unknown[] = [];
 
     const registry: { initialized: boolean } = await ctx.runMutation(
@@ -275,6 +277,7 @@ export const bootstrapSystem = action({
 export const launchAllAgents = action({
   args: {},
   handler: async (ctx) => {
+    await requireStaff(ctx);
     const agents: unknown[] = [];
 
     agents.push(await doLaunchOrchestrator(ctx));

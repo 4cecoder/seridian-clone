@@ -1,6 +1,7 @@
 import { mutation, query, internalMutation } from "./_generated/server";
 import { v } from "convex/values";
 import { Doc, Id } from "./_generated/dataModel";
+import { requireStaff } from "./lib/staff";
 
 // Work item lifecycle functions
 export const claimWorkItem = mutation({
@@ -9,6 +10,7 @@ export const claimWorkItem = mutation({
     agentId: v.string(),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     const item = await ctx.db.get(args.workItemId);
     if (!item) throw new Error("Work item not found");
     if (item.status !== "pending") throw new Error("Work item not available");
@@ -41,6 +43,7 @@ export const updateWorkItemProgress = mutation({
     ),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     await ctx.db.patch(args.workItemId, {
       status: args.status,
       ...(args.status === "completed" && { completedAt: Date.now() }),
@@ -59,6 +62,7 @@ export const getPendingWork = query({
     limit: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     const limit = args.limit || 10;
     const lane = args.lane;
 
@@ -84,6 +88,7 @@ export const getWorkItemDependencies = query({
     workItemId: v.id("agentWorkItems"),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     const item = await ctx.db.get(args.workItemId);
     if (!item) return null;
 
@@ -118,6 +123,7 @@ export const logCheckpoint = mutation({
     metrics: v.optional(v.record(v.string(), v.any())),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     const checkpointId = await ctx.db.insert("agentCheckpoints", {
       agent: args.agent,
       checkpointType: args.checkpointType,
@@ -137,6 +143,7 @@ export const getAgentHeartbeats = query({
     limit: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     const limit = args.limit || 50;
     const agent = args.agent;
 
@@ -167,6 +174,7 @@ export const recordLaneMetric = mutation({
     metadata: v.optional(v.record(v.string(), v.any())),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     const metricId = await ctx.db.insert("laneMetrics", {
       lane: args.lane,
       metric: args.metric,
@@ -186,6 +194,7 @@ export const getLaneMetrics = query({
     hoursBack: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     const hoursBack = args.hoursBack || 24;
     const cutoffTime = Date.now() - hoursBack * 60 * 60 * 1000;
 
@@ -213,6 +222,7 @@ export const registerAgent = mutation({
     maxConcurrentTasks: v.number(),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     const existing = await ctx.db
       .query("agentConfig")
       .withIndex("by_agentId", (q) => q.eq("agentId", args.agentId))
@@ -247,6 +257,7 @@ export const getAgentConfig = query({
     agentId: v.string(),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     return await ctx.db
       .query("agentConfig")
       .withIndex("by_agentId", (q) => q.eq("agentId", args.agentId))
@@ -266,6 +277,7 @@ export const getAgentsByRole = query({
     ),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     return await ctx.db
       .query("agentConfig")
       .withIndex("by_role", (q) => q.eq("role", args.role))
@@ -297,6 +309,7 @@ export const createWorkItem = mutation({
     dependencies: v.optional(v.array(v.id("agentWorkItems"))),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     const itemId = await ctx.db.insert("agentWorkItems", {
       workType: args.workType,
       lane: args.lane,
@@ -319,6 +332,7 @@ export const getWorkStatus = query({
     lane: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     const query = ctx.db.query("agentWorkItems");
     const allItems = args.lane
       ? await query.withIndex("by_lane", (q) => q.eq("lane", args.lane)).take(1000)

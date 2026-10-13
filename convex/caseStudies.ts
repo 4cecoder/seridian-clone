@@ -1,11 +1,13 @@
 import { v } from "convex/values";
 import { query, mutation } from "./_generated/server";
+import { requireStaff } from "./lib/staff";
 
 export const list = query({
   args: {
     published: v.optional(v.boolean()),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     if (args.published !== undefined) {
       return await ctx.db
         .query("caseStudies")
@@ -31,6 +33,7 @@ export const listPublished = query({
 export const get = query({
   args: { caseStudyId: v.id("caseStudies") },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     return await ctx.db.get(args.caseStudyId);
   },
 });
@@ -49,6 +52,7 @@ export const create = mutation({
     published: v.boolean(),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     const existing = await ctx.db.query("caseStudies").order("desc").take(1);
     const maxOrder = existing.length > 0 ? existing[0].order + 1 : 0;
     return await ctx.db.insert("caseStudies", { ...args, order: maxOrder });
@@ -71,6 +75,7 @@ export const update = mutation({
     order: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     const { caseStudyId, ...fields } = args;
     const nonUndefined = Object.fromEntries(
       Object.entries(fields).filter(([, v]) => v !== undefined),
@@ -83,6 +88,7 @@ export const update = mutation({
 export const remove = mutation({
   args: { caseStudyId: v.id("caseStudies") },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     await ctx.db.delete(args.caseStudyId);
   },
 });
@@ -92,6 +98,7 @@ export const count = query({
     published: v.optional(v.boolean()),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     if (args.published !== undefined) {
       const studies = await ctx.db
         .query("caseStudies")

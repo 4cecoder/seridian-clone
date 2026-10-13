@@ -1,11 +1,13 @@
 import { query } from "./_generated/server";
 import { v } from "convex/values";
+import { requireStaff } from "./lib/staff";
 
 export const getGitHubIssues = query({
   args: {
     state: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     if (args.state) {
       return await ctx.db
         .query("githubIssues")
@@ -23,6 +25,7 @@ export const getGitHubIssues = query({
 export const getGitHubProjects = query({
   args: {},
   handler: async (ctx) => {
+    await requireStaff(ctx);
     return await ctx.db
       .query("githubProjects")
       .order("desc")
@@ -33,6 +36,7 @@ export const getGitHubProjects = query({
 export const getGitHubStats = query({
   args: {},
   handler: async (ctx) => {
+    await requireStaff(ctx);
     const issues = await ctx.db.query("githubIssues").collect();
     const projects = await ctx.db.query("githubProjects").collect();
 

@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { query, mutation } from "./_generated/server";
+import { requireStaff } from "./lib/staff";
 
 export const list = query({
   args: {
@@ -8,6 +9,7 @@ export const list = query({
     clientId: v.optional(v.id("clients")),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     if (args.clientId) {
       return await ctx.db
         .query("bookings")
@@ -22,6 +24,7 @@ export const list = query({
 export const get = query({
   args: { bookingId: v.id("bookings") },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     return await ctx.db.get(args.bookingId);
   },
 });
@@ -42,6 +45,7 @@ export const create = mutation({
     meetingUrl: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     return await ctx.db.insert("bookings", args);
   },
 });
@@ -65,6 +69,7 @@ export const update = mutation({
     meetingUrl: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     const { bookingId, ...fields } = args;
     const nonUndefined = Object.fromEntries(
       Object.entries(fields).filter(([, v]) => v !== undefined),
@@ -77,6 +82,7 @@ export const update = mutation({
 export const remove = mutation({
   args: { bookingId: v.id("bookings") },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     await ctx.db.delete(args.bookingId);
   },
 });

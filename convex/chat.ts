@@ -1,9 +1,11 @@
 import { v } from "convex/values";
 import { query, mutation } from "./_generated/server";
+import { requireStaff } from "./lib/staff";
 
 export const listChannels = query({
   args: { pubkey: v.string() },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     const owned = await ctx.db
       .query("channels")
       .withIndex("by_createdBy", (q) => q.eq("createdBy", args.pubkey))
@@ -20,6 +22,7 @@ export const listChannels = query({
 export const getChannel = query({
   args: { channelId: v.id("channels") },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     return await ctx.db.get(args.channelId);
   },
 });
@@ -29,6 +32,7 @@ export const listMessages = query({
     channelId: v.id("channels"),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     const messages = await ctx.db
       .query("messages")
       .withIndex("by_channelId_and_createdAt", (q) => q.eq("channelId", args.channelId))
@@ -41,6 +45,7 @@ export const listMessages = query({
 export const getUsers = query({
   args: {},
   handler: async (ctx) => {
+    await requireStaff(ctx);
     const online = await ctx.db
       .query("users")
       .withIndex("by_status", (q) => q.eq("status", "online"))
@@ -56,6 +61,7 @@ export const getUsers = query({
 export const getUser = query({
   args: { pubkey: v.string() },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     return await ctx.db
       .query("users")
       .withIndex("by_pubkey", (q) => q.eq("pubkey", args.pubkey))
@@ -72,6 +78,7 @@ export const createChannel = mutation({
     participants: v.array(v.string()),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     const allParticipants = args.participants.includes(args.createdBy)
       ? args.participants
       : [...args.participants, args.createdBy];
@@ -97,6 +104,7 @@ export const sendMessage = mutation({
     replyTo: v.optional(v.id("messages")),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     const now = Date.now();
     const messageId = await ctx.db.insert("messages", {
       channelId: args.channelId,
@@ -119,6 +127,7 @@ export const editMessage = mutation({
     senderId: v.string(),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     const message = await ctx.db.get(args.messageId);
     if (!message) throw new Error("Message not found");
     if (message.senderId !== args.senderId) throw new Error("Not authorized");
@@ -136,6 +145,7 @@ export const deleteMessage = mutation({
     senderId: v.string(),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     const message = await ctx.db.get(args.messageId);
     if (!message) throw new Error("Message not found");
     if (message.senderId !== args.senderId) throw new Error("Not authorized");
@@ -150,6 +160,7 @@ export const joinChannel = mutation({
     pubkey: v.string(),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     const channel = await ctx.db.get(args.channelId);
     if (!channel) throw new Error("Channel not found");
     if (channel.participants.includes(args.pubkey)) return args.channelId;
@@ -166,6 +177,7 @@ export const leaveChannel = mutation({
     pubkey: v.string(),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     const channel = await ctx.db.get(args.channelId);
     if (!channel) throw new Error("Channel not found");
     await ctx.db.patch(args.channelId, {
@@ -186,6 +198,7 @@ export const updateUserStatus = mutation({
     ),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     const existing = await ctx.db
       .query("users")
       .withIndex("by_pubkey", (q) => q.eq("pubkey", args.pubkey))

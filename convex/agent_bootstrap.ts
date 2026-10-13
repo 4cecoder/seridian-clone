@@ -1,5 +1,6 @@
 import { mutation } from "./_generated/server";
 import { v } from "convex/values";
+import { requireStaff } from "./lib/staff";
 
 const LANES = [
   "auth",
@@ -22,6 +23,7 @@ const LANES = [
 export const initializeAgentRegistry = mutation({
   args: {},
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     const existing = await ctx.db
       .query("agentConfig")
       .withIndex("by_agentId", (q) => q.eq("agentId", "bootstrap-check"))
@@ -54,6 +56,7 @@ export const seedInitialWorkItems = mutation({
     includeTestItem: v.optional(v.boolean()),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     const existingWork = await ctx.db.query("agentWorkItems").take(1);
     if (existingWork.length > 0) {
       return { seeded: false, message: "Work items already exist; skipping seed" };
@@ -127,6 +130,7 @@ export const seedInitialWorkItems = mutation({
 export const seedLaneMetricsBenchmarks = mutation({
   args: {},
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     const benchmarks = [
       { lane: "auth", metric: "activation_target", value: 40 },
       { lane: "mail", metric: "activation_target", value: 50 },
@@ -172,6 +176,7 @@ export const seedLaneMetricsBenchmarks = mutation({
 export const resetSystemForTesting = mutation({
   args: {},
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     const workItems = await ctx.db.query("agentWorkItems").take(10000);
     const checkpoints = await ctx.db.query("agentCheckpoints").take(10000);
     const metrics = await ctx.db.query("laneMetrics").take(10000);

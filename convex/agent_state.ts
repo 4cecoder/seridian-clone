@@ -1,6 +1,7 @@
 import { mutation, query, internalQuery } from "./_generated/server";
 import { v } from "convex/values";
 import { Doc, Id } from "./_generated/dataModel";
+import { requireStaff } from "./lib/staff";
 
 export const canStartWork = internalQuery({
   args: {
@@ -41,6 +42,7 @@ export const detectDeadlocks = query({
     limit: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     const items = await ctx.db.query("agentWorkItems").take(1000);
     const limit = args.limit || 1000;
 
@@ -99,6 +101,7 @@ export const getWorkItemsStuck = query({
     hoursThreshold: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     const hours = args.hoursThreshold || 2;
     const cutoffTime = Date.now() - hours * 60 * 60 * 1000;
 
@@ -129,6 +132,7 @@ export const markStuckItemsFailed = mutation({
     hoursThreshold: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     const hours = args.hoursThreshold || 2;
     const cutoffTime = Date.now() - hours * 60 * 60 * 1000;
 
@@ -161,6 +165,7 @@ export const resolveBlockedItems = mutation({
     completedItemId: v.id("agentWorkItems"),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     const completed = await ctx.db.get(args.completedItemId);
     if (!completed || completed.status !== "completed") {
       return { unblocked: 0 };
@@ -193,6 +198,7 @@ export const getWorkDependencyTree = query({
     depth: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     const maxDepth = args.depth || 5;
     const root = await ctx.db.get(args.workItemId);
     if (!root) return null;
@@ -239,6 +245,7 @@ export const validateWorkItemTransition = query({
     ),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     const item = await ctx.db.get(args.workItemId);
     if (!item) return { valid: false, reason: "Work item not found" };
 

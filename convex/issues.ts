@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { query, mutation } from "./_generated/server";
+import { requireStaff } from "./lib/staff";
 
 export const list = query({
   args: {
@@ -15,6 +16,7 @@ export const list = query({
     clientId: v.optional(v.id("clients")),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     if (args.status && args.clientId) {
       return await ctx.db
         .query("issues")
@@ -45,6 +47,7 @@ export const list = query({
 export const get = query({
   args: { issueId: v.id("issues") },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     return await ctx.db.get(args.issueId);
   },
 });
@@ -73,6 +76,7 @@ export const create = mutation({
     dueDate: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     const existing = await ctx.db
       .query("issues")
       .withIndex("by_status", (q) => q.eq("status", args.status))
@@ -113,6 +117,7 @@ export const update = mutation({
     order: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     const { issueId, ...fields } = args;
     const nonUndefined = Object.fromEntries(
       Object.entries(fields).filter(([, v]) => v !== undefined),
@@ -125,6 +130,7 @@ export const update = mutation({
 export const remove = mutation({
   args: { issueId: v.id("issues") },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     await ctx.db.delete(args.issueId);
   },
 });
@@ -142,6 +148,7 @@ export const reorder = mutation({
     order: v.number(),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     const issue = await ctx.db.get(args.issueId);
     if (!issue) throw new Error("Issue not found");
 
