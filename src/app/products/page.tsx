@@ -5,11 +5,11 @@ import { ProductsOverview } from "@/components/products/ProductsOverview";
 export const metadata: Metadata = {
   title: "Products | Seridian",
   description:
-    "Kanban, Seridian's core platform services and our portfolio products, with live status for each.",
+    "Kanban, the Seridian apps and our portfolio products, with live status for each.",
   openGraph: {
     title: "Products | Seridian",
     description:
-      "Kanban, Seridian's core platform services and our portfolio products, with live status for each.",
+      "Kanban, the Seridian apps and our portfolio products, with live status for each.",
     type: "website",
   },
 };
@@ -36,7 +36,7 @@ export default function ProductsPage() {
             </h1>
 
             <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-slate-400">
-              Our portfolio products and the core Seridian services. Each one shows its status,
+              Kanban, the Seridian apps and our portfolio products. Each one shows its status,
               and only products with a public site are marked live.
             </p>
           </div>

@@ -31,8 +31,8 @@ export function PortfolioProducts({ id = "portfolio", variant = "page" }: { id?:
             Portfolio products
           </h2>
           <p className="mt-4 text-slate-400">
-            Standalone products and builds, each with its own identity. Some are built on the Core
-            platform.
+            Standalone products, each with its own identity, built for the people who use them
+            every day.
           </p>
         </div>
 

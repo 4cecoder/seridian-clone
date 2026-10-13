@@ -1,4 +1,4 @@
-/** One-strip explanation of the two tiers, plus the in-page tier switch. */
+/** One-strip summary of the two product lines, plus the in-page switch. */
 export function TierIntro({ id }: { id?: string }) {
   return (
     <section
@@ -8,7 +8,7 @@ export function TierIntro({ id }: { id?: string }) {
     >
       <div className="mx-auto max-w-6xl px-6">
         <h2 id="tier-intro-heading" className="sr-only">
-          How our products are organised
+          Our products at a glance
         </h2>
         <div className="grid gap-4 md:grid-cols-2">
           <div className="flex gap-4 rounded-2xl border border-seridian-500/20 bg-gradient-to-br from-seridian-500/10 to-transparent p-6 shadow-[0_1px_0_0_rgba(255,255,255,0.05)_inset]">
@@ -16,9 +16,9 @@ export function TierIntro({ id }: { id?: string }) {
               C
             </span>
             <p className="text-sm leading-relaxed text-slate-300">
-              <span className="font-display font-semibold text-white">Seridian Core is the platform.</span>{" "}
-              One account across every service, signed in through Seridian Auth, with many apps
-              built on it.
+              <span className="font-display font-semibold text-white">Seridian apps.</span>{" "}
+              Everyday tools for your team, from sign-in and chat to mail, scheduling and
+              signatures, with one account for all your Seridian apps.
             </p>
           </div>
           <div className="flex gap-4 rounded-2xl border border-white/10 bg-slate-900/60 p-6 shadow-[0_1px_0_0_rgba(255,255,255,0.04)_inset]">
@@ -26,8 +26,9 @@ export function TierIntro({ id }: { id?: string }) {
               P
             </span>
             <p className="text-sm leading-relaxed text-slate-300">
-              <span className="font-display font-semibold text-white">Portfolio is standalone products and builds.</span>{" "}
-              Each one is its own product with its own identity. Some are built on Core.
+              <span className="font-display font-semibold text-white">Portfolio products.</span>{" "}
+              Standalone products for property, warehouses, construction sites, cities and more,
+              led by Kanban.
             </p>
           </div>
         </div>
@@ -36,14 +37,14 @@ export function TierIntro({ id }: { id?: string }) {
   );
 }
 
-/** Segmented in-page switch between the two tiers. */
+/** Segmented in-page switch between the two product lines. */
 export function TierNav() {
   const links = [
-    { href: "#core", label: "Core" },
+    { href: "#core", label: "Seridian apps" },
     { href: "#portfolio", label: "Portfolio" },
   ];
   return (
-    <nav aria-label="Product tiers" className="flex justify-center">
+    <nav aria-label="Product lines" className="flex justify-center">
       <ul className="inline-flex rounded-full border border-white/10 bg-slate-900/80 p-1 shadow-[0_1px_0_0_rgba(255,255,255,0.05)_inset,0_8px_24px_-12px_rgba(0,0,0,0.6)]">
         {links.map((link) => (
           <li key={link.href}>
