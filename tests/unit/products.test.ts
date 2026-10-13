@@ -1,3 +1,5 @@
+import { readdirSync, readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 import {
   getProduct,
@@ -9,7 +11,8 @@ import {
 } from "../../src/data/products";
 
 const validStatuses: ProductStatus[] = ["live", "beta", "in-development"];
-const validCategories = productCategories.map((category) => category.id);
+const root = resolve(__dirname, "../..");
+const validCategories =productCategories.map((category) => category.id);
 
 describe("products data", () => {
   it("has unique ids", () => {
@@ -106,11 +109,6 @@ describe("products data", () => {
     expect(core.length + portfolio.length).toBe(products.length);
   });
 
-  it("marks exactly one foundation, and it is a Core service", () => {
-    const foundations = products.filter((product) => product.foundation);
-    expect(foundations.map((product) => product.id)).toEqual(["seridian-auth"]);
-    expect(foundations[0].category).toBe("core");
-  });
 
   it("@regression SER-11 public product copy does not describe internal architecture", () => {
     // Founder 2026-10-12: don't publish backend/infrastructure details on the marketing site.
@@ -120,5 +118,27 @@ describe("products data", () => {
       ...productCategories.map((category) => `${category.label} ${category.description}`),
     ].join("\n");
     expect(copy).not.toMatch(forbidden);
+  });
+
+  it("@regression SER-12 products copy has no architecture talk", () => {
+    // Founder 2026-10-12: on / and /products, show our products as products. No
+    // unified backend, no Auth as a foundation the others sign in through, no
+    // "Core service"/platform tier framing, no how-the-products-connect copy.
+    const forbidden =
+      /foundation|signs? (?:people )?in through|signed in through|core services?\b|core platform|seridian core|platform services?|built on (?:the )?core|unified|underpin|shared backend|one backend|base layer|core lanes|convex/i;
+    const files = [
+      "src/data/products.ts",
+      "src/app/products/page.tsx",
+      ...readdirSync(resolve(root, "src/components/products")).map((file) => `src/components/products/${file}`),
+    ];
+    for (const file of files) {
+      const source = readFileSync(resolve(root, file), "utf8");
+      const hits = source.split("\n").filter((line) => forbidden.test(line));
+      expect(hits, file).toEqual([]);
+    }
+    const oneAccount = files
+      .map((file) => readFileSync(resolve(root, file), "utf8").match(/one (?:account|sign-in)/gi)?.length ?? 0)
+      .reduce((sum, count) => sum + count, 0);
+    expect(oneAccount).toBeLessThanOrEqual(1);
   });
 });

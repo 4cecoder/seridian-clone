@@ -1,6 +1,7 @@
 /**
- * Seridian product showcase: Kanban, the core Seridian services and the
- * portfolio products.
+ * Seridian product showcase: Kanban, the Seridian apps and the portfolio
+ * products. Describe what each product does for customers, never how it is
+ * built or how products connect behind the scenes.
  *
  * Facts only. A product is `live` when its public URL returned HTTP 200 when
  * this list was last checked (see PRODUCTS_CHECKED_ON). Everything else is
@@ -48,8 +49,6 @@ export interface Product {
   icon: ProductIconKey;
   /** Shown in the home-page teaser. Kanban is the flagship and is shown as a hero. */
   featured?: boolean;
-  /** The sign-in and identity layer every Core service sits on. */
-  foundation?: boolean;
 }
 
 export const products: Product[] = [
@@ -133,7 +132,7 @@ export const products: Product[] = [
     icon: "video",
   },
 
-  // Core Seridian services
+  // Seridian apps
   {
     id: "seridian-auth",
     name: "Seridian Auth",
@@ -144,7 +143,6 @@ export const products: Product[] = [
     category: "core",
     icon: "lock",
     featured: true,
-    foundation: true,
   },
   {
     id: "usermon",
@@ -229,8 +227,8 @@ export const productCategories: { id: ProductCategory; label: string; descriptio
   },
   {
     id: "core",
-    label: "Core services",
-    description: "The platform services Seridian is building, with one sign-in across all of them.",
+    label: "Seridian apps",
+    description: "Everyday apps for running a team, from sign-in and chat to mail, scheduling and signatures.",
   },
 ];
 

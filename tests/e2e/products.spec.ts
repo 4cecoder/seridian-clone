@@ -1,12 +1,12 @@
 import { expect, test, type Page } from "@playwright/test";
 import { products } from "../../src/data/products";
 
-const tierNav = (page: Page) => page.getByRole("navigation", { name: "Product tiers" });
+const tierNav = (page: Page) => page.getByRole("navigation", { name: "Product lines" });
 
 test.describe("home products section", () => {
-  test("shows both tiers with their headings", async ({ page }) => {
+  test("shows both product lines with their headings", async ({ page }) => {
     await page.goto("/");
-    await expect(page.locator("#core").getByRole("heading", { level: 2, name: "Core platform" })).toBeVisible();
+    await expect(page.locator("#core").getByRole("heading", { level: 2, name: "Seridian apps" })).toBeVisible();
     await expect(page.locator("#portfolio").getByRole("heading", { level: 2, name: "Portfolio products" })).toBeVisible();
   });
 
@@ -43,11 +43,11 @@ test.describe("home products section", () => {
 });
 
 test.describe("products page", () => {
-  test("shows both tiers, a tier nav, and every product", async ({ page }) => {
+  test("shows both product lines, a nav, and every product", async ({ page }) => {
     await page.goto("/products");
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
     await expect(tierNav(page)).toBeVisible();
-    await expect(page.locator("#core").getByRole("heading", { level: 2, name: "Core platform" })).toBeVisible();
+    await expect(page.locator("#core").getByRole("heading", { level: 2, name: "Seridian apps" })).toBeVisible();
     await expect(page.locator("#portfolio").getByRole("heading", { level: 2, name: "Portfolio products" })).toBeVisible();
 
     for (const product of products) {
@@ -58,9 +58,9 @@ test.describe("products page", () => {
     await expect(page.getByText("Live", { exact: true })).toHaveCount(liveCount);
   });
 
-  test("tier nav scrolls to each zone", async ({ page }) => {
+  test("product nav scrolls to each zone", async ({ page }) => {
     await page.goto("/products");
-    await tierNav(page).getByRole("link", { name: "Core" }).click();
+    await tierNav(page).getByRole("link", { name: "Seridian apps" }).click();
     await expect(page).toHaveURL(/#core$/);
     await expect(page.locator("#core")).toBeInViewport();
 
