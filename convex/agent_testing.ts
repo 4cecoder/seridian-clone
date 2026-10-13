@@ -1,5 +1,6 @@
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
+import { requireStaff } from "./lib/staff";
 
 // QA Agent: Track test coverage, detect flaky tests, validate quality gates
 export const recordTestCoverage = mutation({
@@ -10,6 +11,7 @@ export const recordTestCoverage = mutation({
     timestamp: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     const metricId = await ctx.db.insert("laneMetrics", {
       lane: args.lane,
       metric: "test_coverage",
@@ -30,6 +32,7 @@ export const recordFlakyTest = mutation({
     totalRuns: v.number(),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     const metricId = await ctx.db.insert("laneMetrics", {
       lane: args.lane,
       metric: "flaky_test",
@@ -56,6 +59,7 @@ export const recordE2ETestResult = mutation({
     error: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     const metricId = await ctx.db.insert("laneMetrics", {
       lane: args.lane,
       metric: "e2e_test",
@@ -78,6 +82,7 @@ export const getE2EResults = query({
     hoursBack: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     const hoursBack = args.hoursBack || 24;
     const cutoffTime = Date.now() - hoursBack * 60 * 60 * 1000;
 
@@ -115,6 +120,7 @@ export const recordPerfBaseline = mutation({
     valueMs: v.number(),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     const metricId = await ctx.db.insert("laneMetrics", {
       lane: args.lane,
       metric: `perf_${args.metric}`,
@@ -133,6 +139,7 @@ export const getPerfRegression = query({
     hoursBack: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     const hoursBack = args.hoursBack || 24;
     const cutoffTime = Date.now() - hoursBack * 60 * 60 * 1000;
     const fullMetricName = `perf_${args.metric}`;
@@ -185,6 +192,7 @@ export const recordSecurityCheck = mutation({
     findings: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     const metricId = await ctx.db.insert("laneMetrics", {
       lane: args.lane,
       metric: `security_${args.checkType}`,
@@ -203,6 +211,7 @@ export const getSecurityStatus = query({
     hoursBack: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     const hoursBack = args.hoursBack || 24;
     const cutoffTime = Date.now() - hoursBack * 60 * 60 * 1000;
 
@@ -260,6 +269,7 @@ export const recordSyntaxValidation = mutation({
     timestamp: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     const metricId = await ctx.db.insert("laneMetrics", {
       lane: args.lane,
       metric: "gate_syntax",
@@ -286,6 +296,7 @@ export const recordRepeatDetection = mutation({
     timestamp: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     const metricId = await ctx.db.insert("laneMetrics", {
       lane: args.lane,
       metric: "gate_repeat",
@@ -330,6 +341,7 @@ export const recordDiffGateResult = mutation({
     timestamp: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     const metricId = await ctx.db.insert("laneMetrics", {
       lane: args.lane,
       metric: "gate_diff",
@@ -363,6 +375,7 @@ export const recordCompilationResult = mutation({
     timestamp: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     const metricId = await ctx.db.insert("laneMetrics", {
       lane: args.lane,
       metric: "gate_compile",
@@ -394,6 +407,7 @@ export const recordObjectiveValidation = mutation({
     timestamp: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     const allPassed = args.objectives.every((o) => !o.required || o.passed);
     const metricId = await ctx.db.insert("laneMetrics", {
       lane: args.lane,
@@ -417,6 +431,7 @@ export const getGateFailureCount = query({
     gateType: v.optional(v.string()), // "syntax", "diff", "compile", etc.
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     const metrics = await ctx.db
       .query("laneMetrics")
       .withIndex("by_lane", (q) =>
@@ -464,6 +479,7 @@ export const checkQualityGates = query({
     lane: v.string(),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     // Get latest metrics for this lane
     const metrics = await ctx.db
       .query("laneMetrics")
@@ -540,6 +556,7 @@ export const checkQualityGates = query({
 export const getFleetQualityStatus = query({
   args: {},
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     const lanes = [
       "Auth",
       "Mail",

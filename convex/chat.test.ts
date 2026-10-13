@@ -1,17 +1,24 @@
 /// <reference types="vite/client" />
 import { convexTest } from "convex-test";
-import { expect, test, describe, beforeEach } from "vitest";
+import { expect, test, describe, beforeEach, afterEach, vi } from "vitest";
 import { api } from "./_generated/api";
 import { Doc } from "./_generated/dataModel";
 import schema from "./schema";
 
 const modules = import.meta.glob("./**/*.ts");
 
+// SER-13: every public function is staff-only, so call as verified staff.
+const STAFF = { email: "staff@seridian.dev", emailVerified: true };
+
 describe("chat functions", () => {
-  let t: ReturnType<typeof convexTest>;
+  let t: ReturnType<ReturnType<typeof convexTest>["withIdentity"]>;
 
   beforeEach(() => {
-    t = convexTest({ schema, modules });
+    vi.stubEnv("STAFF_EMAILS", STAFF.email);
+    t = convexTest({ schema, modules }).withIdentity(STAFF);
+  });
+  afterEach(() => {
+    vi.unstubAllEnvs();
   });
 
   test("createChannel creates a channel", async () => {

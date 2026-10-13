@@ -1,6 +1,7 @@
 import { action, internalMutation } from "./_generated/server";
 import { v } from "convex/values";
 import { internal } from "./_generated/api";
+import { requireStaff } from "./lib/staff";
 
 const GITHUB_API_URL = "https://api.github.com";
 const GITHUB_GRAPHQL_URL = "https://api.github.com/graphql";
@@ -367,6 +368,7 @@ export const syncGitHubIssues = action({
     repo: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     const token = process.env.GITHUB_TOKEN;
     if (!token) {
       throw new Error("GITHUB_TOKEN is not configured");
@@ -395,6 +397,7 @@ export const syncGitHubProjects = action({
     org: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     const token = process.env.GITHUB_TOKEN;
     if (!token) {
       throw new Error("GITHUB_TOKEN is not configured");
@@ -428,6 +431,7 @@ export const syncAllGitHub = action({
     issues: SyncResult;
     projects: SyncResult;
   }> => {
+    await requireStaff(ctx);
     const token = process.env.GITHUB_TOKEN;
     if (!token) {
       throw new Error("GITHUB_TOKEN is not configured");

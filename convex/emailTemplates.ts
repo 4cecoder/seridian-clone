@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { query, mutation } from "./_generated/server";
+import { requireStaff } from "./lib/staff";
 
 const categoryValidator = v.union(
   v.literal("proposal"),
@@ -14,6 +15,7 @@ export const list = query({
     category: v.optional(categoryValidator),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     if (args.category) {
       return await ctx.db
         .query("emailTemplates")
@@ -28,6 +30,7 @@ export const list = query({
 export const get = query({
   args: { templateId: v.id("emailTemplates") },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     return await ctx.db.get(args.templateId);
   },
 });
@@ -35,6 +38,7 @@ export const get = query({
 export const getByCategory = query({
   args: { category: categoryValidator },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     return await ctx.db
       .query("emailTemplates")
       .withIndex("by_category", (q) => q.eq("category", args.category))
@@ -53,6 +57,7 @@ export const create = mutation({
     createdBy: v.string(),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     const now = Date.now();
     return await ctx.db.insert("emailTemplates", {
       name: args.name,
@@ -77,6 +82,7 @@ export const update = mutation({
     variables: v.optional(v.array(v.string())),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     const { templateId, ...fields } = args;
     const nonUndefined = Object.fromEntries(
       Object.entries(fields).filter(([, v]) => v !== undefined),
@@ -92,6 +98,7 @@ export const update = mutation({
 export const remove = mutation({
   args: { templateId: v.id("emailTemplates") },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     await ctx.db.delete(args.templateId);
   },
 });
@@ -102,6 +109,7 @@ export const duplicate = mutation({
     name: v.string(),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     const original = await ctx.db.get(args.templateId);
     if (!original) {
       throw new Error("Template not found");
