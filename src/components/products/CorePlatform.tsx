@@ -3,12 +3,6 @@ import { productsByCategory, type Product } from "@/data/products";
 import { ProductIcon } from "./ProductIcon";
 import { StatusBadge } from "./StatusBadge";
 
-function Connector() {
-  return (
-    <div aria-hidden="true" className="mx-auto h-8 w-px bg-gradient-to-b from-seridian-500/60 to-seridian-500/10" />
-  );
-}
-
 function ModuleTile({ product }: { product: Product }) {
   return (
     <div className="flex h-full flex-col rounded-xl border border-white/10 bg-gradient-to-b from-slate-850/70 to-slate-925 p-5 shadow-[0_1px_0_0_rgba(255,255,255,0.05)_inset,0_10px_20px_-12px_rgba(0,0,0,0.6)] transition duration-300 hover:-translate-y-0.5 hover:border-seridian-500/25 motion-reduce:transition-none">
@@ -40,11 +34,9 @@ function ModuleTile({ product }: { product: Product }) {
   );
 }
 
-/** The Core platform: services on top, with Seridian Auth as the shared sign-in foundation. */
+/** Seridian apps: every app shown as its own product, side by side. */
 export function CorePlatform({ id = "core" }: { id?: string }) {
-  const core = productsByCategory("core");
-  const foundation = core.find((product) => product.foundation);
-  const modules = core.filter((product) => !product.foundation);
+  const apps = productsByCategory("core");
 
   return (
     <section
@@ -61,64 +53,26 @@ export function CorePlatform({ id = "core" }: { id?: string }) {
             variant="secondary"
             className="border-seridian-500/30 bg-seridian-500/10 text-seridian-300 uppercase tracking-wider"
           >
-            Seridian Core
+            Seridian
           </Badge>
           <h2 id="core-heading" className="font-display mt-3 text-3xl font-bold tracking-tight text-white md:text-4xl">
-            Core platform
+            Seridian apps
           </h2>
           <p className="mt-4 text-slate-400">
-            Every Core service signs people in through Seridian Auth, so one account works
-            across all of them. Each service shows its own status.
+            Sign-in, chat, mail, scheduling, signatures, docs and more: everyday apps for
+            running a team. Each app shows its own status.
           </p>
         </div>
 
         <div className="mt-14 rounded-3xl border border-seridian-500/15 bg-slate-900/60 p-5 shadow-[0_1px_0_0_rgba(255,255,255,0.05)_inset,0_40px_80px_-32px_rgba(6,182,212,0.25)] md:p-10">
-          <p className="font-mono text-xs uppercase tracking-wider text-slate-500">Services and apps</p>
+          <p className="font-mono text-xs uppercase tracking-wider text-slate-500">Apps</p>
           <ul data-product-grid className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {modules.map((product) => (
+            {apps.map((product) => (
               <li key={product.id} className="flex flex-col">
                 <ModuleTile product={product} />
               </li>
             ))}
           </ul>
-
-          <Connector />
-
-          {foundation && (
-            <div
-              data-testid="core-foundation"
-              className="relative rounded-2xl border border-seridian-400/40 bg-gradient-to-r from-seridian-500/15 via-seridian-500/5 to-transparent p-6 shadow-[0_0_40px_-12px_rgba(6,182,212,0.6),0_1px_0_0_rgba(255,255,255,0.08)_inset]"
-            >
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                <div className="flex items-start gap-4">
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-seridian-500/20 text-seridian-300">
-                    <ProductIcon icon={foundation.icon} className="h-6 w-6" />
-                  </span>
-                  <div>
-                    <p className="font-mono text-xs uppercase tracking-wider text-seridian-300">Foundation</p>
-                    <h3 className="font-display mt-1 text-xl font-semibold text-white">{foundation.name}</h3>
-                    <p className="mt-1 text-sm leading-relaxed text-slate-300">{foundation.value}</p>
-                  </div>
-                </div>
-                <div className="flex shrink-0 items-center gap-4 sm:flex-col sm:items-end">
-                  <StatusBadge status={foundation.status} />
-                  {foundation.url && (
-                    <a
-                      href={foundation.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 rounded-md text-sm font-medium text-seridian-300 outline-none hover:text-seridian-200 focus-visible:ring-2 focus-visible:ring-seridian-500/50"
-                    >
-                      Visit {foundation.name}
-                      <span aria-hidden="true">&rarr;</span>
-                      <span className="sr-only">(opens in a new tab)</span>
-                    </a>
-                  )}
-                </div>
-              </div>
-            </div>
-          )}
-
         </div>
       </div>
     </section>

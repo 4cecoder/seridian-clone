@@ -2,7 +2,7 @@ import { CorePlatform } from "./CorePlatform";
 import { PortfolioProducts } from "./PortfolioProducts";
 import { TierIntro, TierNav } from "./TierIntro";
 
-/** The two-tier products view, shared by the home page and /products. */
+/** The products view (Seridian apps and Portfolio), used by the home page and /products. */
 export function ProductsOverview({ variant }: { variant: "home" | "page" }) {
   return (
     <>
