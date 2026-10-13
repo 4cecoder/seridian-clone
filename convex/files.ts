@@ -1,12 +1,14 @@
 import { v } from "convex/values";
 import { query, mutation, action } from "./_generated/server";
 import { api } from "./_generated/api";
+import { requireStaff } from "./lib/staff";
 
 export const list = query({
   args: {
     parentId: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     if (args.parentId) {
       return await ctx.db
         .query("files")
@@ -25,6 +27,7 @@ export const list = query({
 export const get = query({
   args: { fileId: v.id("files") },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     return await ctx.db.get(args.fileId);
   },
 });
@@ -32,6 +35,7 @@ export const get = query({
 export const getByClient = query({
   args: { clientId: v.id("clients") },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     return await ctx.db
       .query("files")
       .withIndex("by_clientId", (q) => q.eq("clientId", args.clientId))
@@ -43,6 +47,7 @@ export const getByClient = query({
 export const getStorageUrl = query({
   args: { fileId: v.id("files") },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     const file = await ctx.db.get(args.fileId);
     if (!file) {
       return null;
@@ -62,6 +67,7 @@ export const create = mutation({
     uploadedBy: v.string(),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     return await ctx.db.insert("files", {
       name: args.name,
       type: args.type,
@@ -78,6 +84,7 @@ export const create = mutation({
 export const remove = mutation({
   args: { fileId: v.id("files") },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     const file = await ctx.db.get(args.fileId);
     if (file) {
       await ctx.storage.delete(file.storageId);
@@ -92,6 +99,7 @@ export const move = mutation({
     parentId: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     await ctx.db.patch(args.fileId, { parentId: args.parentId });
     return args.fileId;
   },
@@ -108,6 +116,7 @@ export const upload = action({
     uploadedBy: v.string(),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     const storageId = await ctx.storage.store(
       new Blob([args.blob], { type: args.type }),
     );

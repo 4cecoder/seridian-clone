@@ -1,11 +1,13 @@
 import { v } from "convex/values";
 import { query, mutation } from "./_generated/server";
+import { requireStaff } from "./lib/staff";
 
 export const list = query({
   args: {
     status: v.optional(v.union(v.literal("active"), v.literal("inactive"))),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     if (args.status) {
       return await ctx.db
         .query("clients")
@@ -20,6 +22,7 @@ export const list = query({
 export const get = query({
   args: { clientId: v.id("clients") },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     return await ctx.db.get(args.clientId);
   },
 });
@@ -36,6 +39,7 @@ export const create = mutation({
     industry: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     return await ctx.db.insert("clients", args);
   },
 });
@@ -53,6 +57,7 @@ export const update = mutation({
     industry: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     const { clientId, ...fields } = args;
     const nonUndefined = Object.fromEntries(
       Object.entries(fields).filter(([, v]) => v !== undefined),
@@ -65,6 +70,7 @@ export const update = mutation({
 export const remove = mutation({
   args: { clientId: v.id("clients") },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     await ctx.db.delete(args.clientId);
   },
 });

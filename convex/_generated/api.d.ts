@@ -26,6 +26,7 @@ import type * as files from "../files.js";
 import type * as githubIngest from "../githubIngest.js";
 import type * as githubSync from "../githubSync.js";
 import type * as issues from "../issues.js";
+import type * as lib_staff from "../lib/staff.js";
 import type * as messages from "../messages.js";
 import type * as proposals from "../proposals.js";
 import type * as users from "../users.js";
@@ -55,6 +56,7 @@ declare const fullApi: ApiFromModules<{
   githubIngest: typeof githubIngest;
   githubSync: typeof githubSync;
   issues: typeof issues;
+  "lib/staff": typeof lib_staff;
   messages: typeof messages;
   proposals: typeof proposals;
   users: typeof users;

@@ -1,9 +1,11 @@
 import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
+import { requireStaff } from "./lib/staff";
 
 export const list = query({
   args: {},
   handler: async (ctx) => {
+    await requireStaff(ctx);
     return await ctx.db.query("channels").collect();
   },
 });
@@ -17,6 +19,7 @@ export const create = mutation({
     participants: v.array(v.string()),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     const channelId = await ctx.db.insert("channels", {
       name: args.name,
       description: args.description,
@@ -32,6 +35,7 @@ export const create = mutation({
 export const get = query({
   args: { channelId: v.id("channels") },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     return await ctx.db.get(args.channelId);
   },
 });

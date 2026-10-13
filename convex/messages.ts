@@ -1,9 +1,11 @@
 import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
+import { requireStaff } from "./lib/staff";
 
 export const listByChannel = query({
   args: { channelId: v.id("channels") },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     return await ctx.db
       .query("messages")
       .withIndex("by_channelId_and_createdAt", (q) => q.eq("channelId", args.channelId))
@@ -22,6 +24,7 @@ export const send = mutation({
     replyTo: v.optional(v.id("messages")),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     const messageId = await ctx.db.insert("messages", {
       channelId: args.channelId,
       senderId: args.senderId,
@@ -43,6 +46,7 @@ export const send = mutation({
 export const listAll = query({
   args: {},
   handler: async (ctx) => {
+    await requireStaff(ctx);
     return await ctx.db.query("messages").collect();
   },
 });

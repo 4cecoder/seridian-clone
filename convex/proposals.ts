@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { query, mutation } from "./_generated/server";
+import { requireStaff } from "./lib/staff";
 
 const statusValidator = v.union(
   v.literal("draft"),
@@ -15,6 +16,7 @@ export const list = query({
     clientId: v.optional(v.id("clients")),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     if (args.status) {
       return await ctx.db
         .query("proposals")
@@ -36,6 +38,7 @@ export const list = query({
 export const get = query({
   args: { proposalId: v.id("proposals") },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     return await ctx.db.get(args.proposalId);
   },
 });
@@ -43,6 +46,7 @@ export const get = query({
 export const getByClient = query({
   args: { clientId: v.id("clients") },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     return await ctx.db
       .query("proposals")
       .withIndex("by_clientId", (q) => q.eq("clientId", args.clientId))
@@ -65,6 +69,7 @@ export const create = mutation({
     createdBy: v.string(),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     const now = Date.now();
     return await ctx.db.insert("proposals", {
       title: args.title,
@@ -97,6 +102,7 @@ export const update = mutation({
     notes: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     const { proposalId, ...fields } = args;
     const nonUndefined = Object.fromEntries(
       Object.entries(fields).filter(([, v]) => v !== undefined),
@@ -112,6 +118,7 @@ export const update = mutation({
 export const remove = mutation({
   args: { proposalId: v.id("proposals") },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     await ctx.db.delete(args.proposalId);
   },
 });
@@ -119,6 +126,7 @@ export const remove = mutation({
 export const send = mutation({
   args: { proposalId: v.id("proposals") },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     const now = Date.now();
     await ctx.db.patch(args.proposalId, {
       status: "sent",
@@ -132,6 +140,7 @@ export const send = mutation({
 export const accept = mutation({
   args: { proposalId: v.id("proposals") },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     const now = Date.now();
     await ctx.db.patch(args.proposalId, {
       status: "accepted",
@@ -145,6 +154,7 @@ export const accept = mutation({
 export const reject = mutation({
   args: { proposalId: v.id("proposals") },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     const now = Date.now();
     await ctx.db.patch(args.proposalId, {
       status: "rejected",

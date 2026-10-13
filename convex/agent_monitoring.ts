@@ -1,10 +1,12 @@
 import { query } from "./_generated/server";
 import { v } from "convex/values";
 import { Doc } from "./_generated/dataModel";
+import { requireStaff } from "./lib/staff";
 
 export const getFleetStatus = query({
   args: {},
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     const configs = await ctx.db.query("agentConfig").take(1000);
     const checkpoints = await ctx.db.query("agentCheckpoints").take(10000);
 
@@ -62,6 +64,7 @@ export const getAgentHeartbeatStatus = query({
     minutesBack: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     const minutes = args.minutesBack || 60;
     const cutoff = Date.now() - minutes * 60 * 1000;
 
@@ -125,6 +128,7 @@ export const getAgentErrors = query({
     agent: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     const hours = args.hoursBack || 24;
     const cutoff = Date.now() - hours * 60 * 60 * 1000;
 
@@ -159,6 +163,7 @@ export const getWorkVelocity = query({
     daysBack: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     const days = args.daysBack || 7;
     const cutoff = Date.now() - days * 24 * 60 * 60 * 1000;
 
@@ -219,6 +224,7 @@ export const getWorkItemStatus = query({
     lane: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     let items = await ctx.db.query("agentWorkItems").take(1000);
 
     if (args.lane) {
@@ -267,6 +273,7 @@ export const getWorkItemStatus = query({
 export const getDashboardSummary = query({
   args: {},
   handler: async (ctx, args) => {
+    await requireStaff(ctx);
     const fleet = await ctx.db.query("agentConfig").take(1000);
     const activeFleet = fleet.filter((c) => c.active && c.agentId !== "bootstrap-check");
 
